@@ -1,6 +1,6 @@
 ---
 name: calculator
-description: Perform accurate mathematical calculations using proper order of operations. Use this when the user asks to calculate, compute, or solve mathematical expressions, percentages, or averages.
+description: CRITICAL for ALL mathematical and numerical operations including arithmetic, percentages, averages, and DATE/CALENDAR calculations (day of week, date differences, time calculations). MANDATORY when user asks to calculate, compute, solve expressions, determine dates, or perform any numeric analysis.
 ---
 
 # Calculator Skill
