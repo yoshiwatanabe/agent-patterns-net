@@ -16,6 +16,12 @@ Skills are stored in the `.github/skills` directory. When you interact with Copi
 
 ## Skills in This Demo
 
+### Prereq
+
+Make sure you enable the Skills in VS Code
+
+![alt text](image.png)
+
 ### 🧮 Calculator
 **Location:** `.github/skills/calculator/`
 
