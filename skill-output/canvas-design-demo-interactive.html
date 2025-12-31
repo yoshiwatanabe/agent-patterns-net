@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Design Skill - Interactive Demonstration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --anthropic-dark: #141413;
+            --anthropic-light: #faf9f5;
+            --anthropic-orange: #d97757;
+            --anthropic-blue: #6a9bcc;
+            --anthropic-green: #788c5d;
+            --anthropic-gray: #b0aea5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--anthropic-light) 0%, #f5f3ee 100%);
+            font-family: 'Lora', Georgia, serif;
+            color: var(--anthropic-dark);
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        h1 {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 48px;
+            margin-bottom: 12px;
+            color: var(--anthropic-dark);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--anthropic-gray);
+            font-style: italic;
+        }
+
+        section {
+            margin-bottom: 60px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(20, 20, 19, 0.08);
+        }
+
+        h2 {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 32px;
+            margin-bottom: 24px;
+            border-bottom: 3px solid var(--anthropic-orange);
+            padding-bottom: 12px;
+        }
+
+        h3 {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 20px;
+            color: var(--anthropic-gray);
+            margin-top: 30px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        /* Canvas Visualization */
+        #canvas-container {
+            background: linear-gradient(135deg, var(--anthropic-light) 0%, #f5f3ee 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(20, 20, 19, 0.1);
+            margin: 30px 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            border-left: 5px solid;
+            box-shadow: 0 2px 8px rgba(20, 20, 19, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .feature-card.orange {
+            border-left-color: var(--anthropic-orange);
+        }
+
+        .feature-card.blue {
+            border-left-color: var(--anthropic-blue);
+        }
+
+        .feature-card.green {
+            border-left-color: var(--anthropic-green);
+        }
+
+        .feature-title {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+
+        .feature-description {
+            font-size: 14px;
+            color: var(--anthropic-gray);
+            line-height: 1.6;
+        }
+
+        /* Benefit Section */
+        .benefit-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .benefit-list li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .benefit-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--anthropic-orange);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .comparison-card {
+            padding: 24px;
+            border-radius: 8px;
+        }
+
+        .comparison-card.without {
+            background: #f0ede4;
+            border: 2px solid #e0dcd3;
+        }
+
+        .comparison-card.with {
+            background: #f0f8ef;
+            border: 2px solid #d4e8cc;
+        }
+
+        .comparison-title {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .comparison-card.without .comparison-title {
+            color: var(--anthropic-orange);
+        }
+
+        .comparison-card.with .comparison-title {
+            color: var(--anthropic-green);
+        }
+
+        .comparison-list {
+            list-style: none;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .comparison-list li {
+            padding: 6px 0;
+        }
+
+        .comparison-card.without .comparison-list li {
+            color: var(--anthropic-orange);
+        }
+
+        .comparison-card.with .comparison-list li {
+            color: var(--anthropic-green);
+        }
+
+        /* Callout */
+        .highlight {
+            background: linear-gradient(120deg, rgba(217, 119, 87, 0.1), rgba(106, 155, 204, 0.1));
+            padding: 24px;
+            border-radius: 8px;
+            border-left: 4px solid var(--anthropic-orange);
+            margin: 30px 0;
+        }
+
+        .highlight strong {
+            color: var(--anthropic-orange);
+        }
+
+        footer {
+            background: var(--anthropic-dark);
+            color: var(--anthropic-light);
+            text-align: center;
+            padding: 40px;
+            margin-top: 80px;
+        }
+
+        footer h3 {
+            color: var(--anthropic-orange);
+            margin-bottom: 12px;
+        }
+
+        footer p {
+            color: var(--anthropic-light);
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 36px; }
+            h2 { font-size: 24px; }
+            .comparison { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Canvas Design Skill</h1>
+            <p class="subtitle">Visual design at expert level, generated through sophisticated aesthetic frameworks</p>
+        </header>
+
+        <!-- SECTION 1: What is Canvas Design? -->
+        <section>
+            <h2>What Canvas Design Does</h2>
+            <p>The <strong>canvas-design skill</strong> takes a design philosophy and expresses it visually through expert-level artwork. Instead of manually creating graphics or struggling with design tools, you describe the aesthetic you want, and the skill generates polished, museum-quality visual assets.</p>
+
+            <p>This demonstrates a powerful principle: <strong>describing the "why" (philosophy) allows the skill to execute the "how" (design)</strong> at a level that would take hours of manual work.</p>
+
+            <h3>Live Canvas Visualization</h3>
+            <p>Below is an interactive demonstration of layered design—showing how systematic organization and expert craftsmanship create visual sophistication:</p>
+
+            <div id="canvas-container">
+                <canvas id="designCanvas"></canvas>
+            </div>
+
+            <p style="font-size: 13px; color: var(--anthropic-gray); text-align: center;">
+                This canvas visualizes the design philosophy: "Layered Efficiency" — systematic organization, modular thinking, and careful composition.
+            </p>
+        </section>
+
+        <!-- SECTION 2: Key Features -->
+        <section>
+            <h2>Key Features That Save Time</h2>
+
+            <div class="features-grid">
+                <div class="feature-card orange">
+                    <div class="feature-title">Design Philosophy Input</div>
+                    <div class="feature-description">Describe the aesthetic, mood, and visual system. No need to manually position elements.</div>
+                </div>
+
+                <div class="feature-card blue">
+                    <div class="feature-title">Expert-Level Output</div>
+                    <div class="feature-description">Receives professional-quality graphics that look like they took hours of refinement.</div>
+                </div>
+
+                <div class="feature-card green">
+                    <div class="feature-title">Minimal Text, Maximum Impact</div>
+                    <div class="feature-description">The skill prioritizes visual design. Text is sparse and strategic, not explanatory.</div>
+                </div>
+
+                <div class="feature-card orange">
+                    <div class="feature-title">High-Resolution Assets</div>
+                    <div class="feature-description">Output in PNG or PDF format, suitable for printing, presentations, or web.</div>
+                </div>
+
+                <div class="feature-card blue">
+                    <div class="feature-title">Sophisticated Composition</div>
+                    <div class="feature-description">Layered elements, color harmony, spatial rhythm—all automatically orchestrated.</div>
+                </div>
+
+                <div class="feature-card green">
+                    <div class="feature-title">Branding & Marketing Ready</div>
+                    <div class="feature-description">Perfect for posters, presentations, marketing materials, and visual communications.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Benefits for Your Company -->
+        <section>
+            <h2>Why Your Team Should Adopt Skills Like This</h2>
+
+            <h3>Time Savings</h3>
+            <ul class="benefit-list">
+                <li><strong>Hours → Minutes:</strong> What takes a designer 3+ hours takes this skill minutes</li>
+                <li><strong>Iteration:</strong> Quickly test different aesthetic directions without starting from scratch</li>
+                <li><strong>No Tool Learning Curve:</strong> Describe what you want in English; the skill handles design execution</li>
+            </ul>
+
+            <h3>Quality Consistency</h3>
+            <ul class="benefit-list">
+                <li><strong>Expert-Level Craftsmanship:</strong> Every output has the polish of a master designer</li>
+                <li><strong>Brand Alignment:</strong> All designs follow your philosophy automatically</li>
+                <li><strong>Professional Standards:</strong> No amateurs, no inconsistency—just high-quality work</li>
+            </ul>
+
+            <h3>Democratized Design</h3>
+            <ul class="benefit-list">
+                <li><strong>Non-Designers Can Create:</strong> You don't need Figma, Photoshop, or design training</li>
+                <li><strong>Cross-Team Collaboration:</strong> Anyone can generate marketing materials, presentations, or graphics</li>
+                <li><strong>Scalable Design:</strong> Generate 10 variations or 100—same quality, no additional cost</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>The Philosophy-First Approach:</strong>
+                <p style="margin-top: 8px;">Instead of "Make me a nice poster," you say "I want an aesthetic that feels systematic, sophisticated, and shows layered complexity." The skill understands visual principles deeply enough to interpret your vision and execute it expertly. This is why skills are powerful—they encode expert knowledge and let anyone access it.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Comparison -->
+        <section>
+            <h2>Without Skills vs. With Skills</h2>
+
+            <div class="comparison">
+                <div class="comparison-card without">
+                    <div class="comparison-title">❌ Manual Design Work</div>
+                    <ul class="comparison-list">
+                        <li>3-8 hours per design asset</li>
+                        <li>Requires expensive design software</li>
+                        <li>Need trained designers on staff</li>
+                        <li>Inconsistent quality if multiple people involved</li>
+                        <li>Hard to iterate or explore variations</li>
+                        <li>Bottleneck when volume increases</li>
+                        <li>High cost per asset created</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card with">
+                    <div class="comparison-title">✓ Using Canvas Design Skill</div>
+                    <ul class="comparison-list">
+                        <li>5-10 minutes per design asset</li>
+                        <li>Runs anywhere with internet access</li>
+                        <li>Anyone can generate professional designs</li>
+                        <li>Consistent, expert-quality output</li>
+                        <li>Easy to test 5-10 variations instantly</li>
+                        <li>Scales to 100+ assets without slowdown</li>
+                        <li>Cost approaches zero per asset</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: How to Implement -->
+        <section>
+            <h2>How to Start Using Skills in Your Company</h2>
+
+            <h3>1. Identify Repetitive Design Needs</h3>
+            <p>What graphics does your team create repeatedly? Posters? Presentations? Marketing materials? Social media? These are prime candidates for skills.</p>
+
+            <h3>2. Define Aesthetic Philosophies</h3>
+            <p>Instead of individual designs, create design philosophies. "Our brand is sophisticated + playful + modern" → the skill generates consistent visuals from this principle.</p>
+
+            <h3>3. Build a Skills Library</h3>
+            <p>You can create multiple skills: one for presentations, one for posters, one for social media, one for annual reports. Each encodes your design expertise once, then scales infinitely.</p>
+
+            <h3>4. Empower Non-Designers</h3>
+            <p>Marketers, product managers, and other non-designers can now generate professional-quality graphics without requesting work from your design team.</p>
+
+            <div class="highlight">
+                <strong>ROI is immediate:</strong>
+                <p style="margin-top: 8px;">If your designer creates 20 graphics per month (at ~4 hours each), that's 80 hours/month. Replacing 80% of this with skills = 64 hours freed up monthly. At $50/hour (loaded cost), that's $38,400/year per designer in freed-up capacity. For a team of 3 designers? You just recovered ~$115K in annual capacity.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 6: Examples of What Skills Can Solve -->
+        <section>
+            <h2>Real-World Use Cases</h2>
+
+            <div class="features-grid">
+                <div class="feature-card orange">
+                    <div class="feature-title">Marketing Campaigns</div>
+                    <div class="feature-description">Generate 20 poster variations for different regions in minutes, all on-brand, all professional.</div>
+                </div>
+
+                <div class="feature-card blue">
+                    <div class="feature-title">Presentation Decks</div>
+                    <div class="feature-description">Beautiful, consistent slide designs. Non-presenters can create slides that look professionally designed.</div>
+                </div>
+
+                <div class="feature-card green">
+                    <div class="feature-title">Social Media Assets</div>
+                    <div class="feature-description">LinkedIn posts, Instagram graphics, Twitter banners—all from your brand philosophy, infinitely.</div>
+                </div>
+
+                <div class="feature-card orange">
+                    <div class="feature-title">Report Covers & Layouts</div>
+                    <div class="feature-description">Annual reports, white papers, case studies—all with stunning custom cover art.</div>
+                </div>
+
+                <div class="feature-card blue">
+                    <div class="feature-title">Internal Communications</div>
+                    <div class="feature-description">Memos, announcements, internal newsletters—branded and beautiful, not boring templates.</div>
+                </div>
+
+                <div class="feature-card green">
+                    <div class="feature-title">Event Collateral</div>
+                    <div class="feature-description">Conference materials, invitations, signage—unique art for each event, zero design overhead.</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <h3>The Skill-Based Future of Work</h3>
+        <p><strong>Skills encode expert knowledge and scale it infinitely.</strong></p>
+        <p>Instead of hiring more designers, you codify design expertise into a skill that anyone can use.</p>
+        <p style="margin-top: 20px; color: var(--anthropic-gray); font-size: 14px;">
+            Canvas Design Skill Demo | Skills as Competitive Advantage
+        </p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('designCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Responsive canvas sizing
+        function resizeCanvas() {
+            const container = document.getElementById('canvas-container');
+            canvas.width = container.clientWidth;
+            canvas.height = 600;
+            drawDesign();
+        }
+
+        function drawDesign() {
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // Background
+            const grad = ctx.createLinearGradient(0, 0, w, h);
+            grad.addColorStop(0, '#faf9f5');
+            grad.addColorStop(1, '#f5f3ee');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            // Colors
+            const colors = {
+                orange: '#d97757',
+                blue: '#6a9bcc',
+                green: '#788c5d',
+                gray: '#b0aea5'
+            };
+
+            // Draw horizontal zones (layers)
+            const zones = [
+                { y: 50, height: 100, color: colors.orange },
+                { y: 160, height: 100, color: colors.blue },
+                { y: 270, height: 100, color: colors.green },
+                { y: 380, height: 120, color: colors.gray }
+            ];
+
+            zones.forEach((zone, idx) => {
+                ctx.strokeStyle = zone.color;
+                ctx.lineWidth = 2;
+                ctx.globalAlpha = 0.6;
+                ctx.strokeRect(40, zone.y, w - 80, zone.height);
+                ctx.globalAlpha = 1;
+            });
+
+            // Draw grid pattern
+            const cellSize = (w - 80) / 12;
+            ctx.globalAlpha = 0.15;
+            for (let i = 1; i < 12; i++) {
+                ctx.strokeStyle = '#141413';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(40 + i * cellSize, 50);
+                ctx.lineTo(40 + i * cellSize, h - 50);
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+
+            // Draw circles
+            const circles = [
+                { x: w * 0.2, y: 150, r: 40, color: colors.orange },
+                { x: w * 0.8, y: 200, r: 35, color: colors.blue },
+                { x: w * 0.6, y: 350, r: 45, color: colors.green },
+                { x: w * 0.3, y: 420, r: 38, color: colors.gray }
+            ];
+
+            circles.forEach(circle => {
+                ctx.strokeStyle = circle.color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(circle.x, circle.y, circle.r, 0, Math.PI * 2);
+                ctx.stroke();
+
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(circle.x, circle.y, circle.r - 8, 0, Math.PI * 2);
+                ctx.stroke();
+            });
+
+            // Draw border
+            ctx.strokeStyle = '#141413';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(20, 20, w - 40, h - 40);
+
+            // Text
+            ctx.fillStyle = '#141413';
+            ctx.font = 'bold 32px "Poppins", Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Layered Efficiency', w / 2, h - 15);
+        }
+
+        // Draw on load and resize
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+    </script>
+</body>
+</html>

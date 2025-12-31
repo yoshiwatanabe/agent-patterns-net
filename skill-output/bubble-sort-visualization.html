@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Sort Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Anthropic Brand Colors */
+        :root {
+            --anthropic-dark: #141413;
+            --anthropic-light: #faf9f5;
+            --anthropic-mid-gray: #b0aea5;
+            --anthropic-light-gray: #e8e6dc;
+            --anthropic-orange: #d97757;
+            --anthropic-blue: #6a9bcc;
+            --anthropic-green: #788c5d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--anthropic-light) 0%, #f5f3ee 100%);
+            min-height: 100vh;
+            color: var(--anthropic-dark);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(20, 20, 19, 0.1);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar h1 {
+            font-family: 'Lora', serif;
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+
+        .sidebar .subtitle {
+            color: var(--anthropic-mid-gray);
+            font-size: 14px;
+            margin-bottom: 32px;
+            line-height: 1.4;
+        }
+
+        /* Control Sections */
+        .control-section {
+            margin-bottom: 32px;
+        }
+
+        .control-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--anthropic-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-section h3::before {
+            content: '•';
+            color: var(--anthropic-orange);
+            font-weight: bold;
+        }
+
+        /* Seed Controls */
+        .seed-input {
+            width: 100%;
+            background: var(--anthropic-light);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 12px;
+            border: 1px solid var(--anthropic-light-gray);
+            text-align: center;
+        }
+
+        .seed-input:focus {
+            outline: none;
+            border-color: var(--anthropic-orange);
+            box-shadow: 0 0 0 2px rgba(217, 119, 87, 0.1);
+            background: white;
+        }
+
+        .seed-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* Parameter Controls */
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 4px;
+            background: var(--anthropic-light-gray);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--anthropic-orange);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: #c86641;
+        }
+
+        .slider-container input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: var(--anthropic-orange);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .value-display {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        /* Buttons */
+        .button {
+            background: var(--anthropic-orange);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .button:hover {
+            background: #c86641;
+            transform: translateY(-1px);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button.secondary {
+            background: var(--anthropic-blue);
+        }
+
+        .button.secondary:hover {
+            background: #5a8bb8;
+        }
+
+        .button.tertiary {
+            background: var(--anthropic-green);
+        }
+
+        .button.tertiary:hover {
+            background: #6b7b52;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .button-row .button {
+            flex: 1;
+        }
+
+        /* Canvas Area */
+        .canvas-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            gap: 16px;
+        }
+
+        #canvas-container {
+            width: 100%;
+            max-width: 1000px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(20, 20, 19, 0.1);
+            background: white;
+        }
+
+        #canvas-container canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .status {
+            font-size: 14px;
+            color: var(--anthropic-mid-gray);
+            text-align: center;
+            min-height: 20px;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--anthropic-mid-gray);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .canvas-area {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Control Sidebar -->
+        <div class="sidebar">
+            <h1>Bubble Sort</h1>
+            <div class="subtitle">Watch elements bubble into sorted order through repeated comparison and exchange.</div>
+
+            <!-- Seed Section -->
+            <div class="control-section">
+                <h3>Seed</h3>
+                <input type="number" id="seed-input" class="seed-input" value="12345" onchange="updateSeed()">
+                <div class="seed-controls">
+                    <button class="button secondary" onclick="previousSeed()">← Prev</button>
+                    <button class="button secondary" onclick="nextSeed()">Next →</button>
+                </div>
+                <button class="button tertiary" onclick="randomSeedAndUpdate()">↻ Random</button>
+            </div>
+
+            <!-- Parameters Section -->
+            <div class="control-section">
+                <h3>Parameters</h3>
+
+                <!-- Array Size -->
+                <div class="control-group">
+                    <label>Array Size</label>
+                    <div class="slider-container">
+                        <input type="range" id="arraySize" min="10" max="200" step="5" value="50" oninput="updateParam('arraySize', this.value)">
+                        <span class="value-display" id="arraySize-value">50</span>
+                    </div>
+                </div>
+
+                <!-- Speed -->
+                <div class="control-group">
+                    <label>Animation Speed</label>
+                    <div class="slider-container">
+                        <input type="range" id="speed" min="1" max="20" step="1" value="10" oninput="updateParam('speed', this.value)">
+                        <span class="value-display" id="speed-value">10</span>
+                    </div>
+                </div>
+
+                <!-- Comparison Highlight -->
+                <div class="control-group">
+                    <label>Highlight Intensity</label>
+                    <div class="slider-container">
+                        <input type="range" id="highlightIntensity" min="0.3" max="1.0" step="0.1" value="0.7" oninput="updateParam('highlightIntensity', this.value)">
+                        <span class="value-display" id="highlightIntensity-value">0.7</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Section -->
+            <div class="control-section">
+                <h3>Actions</h3>
+                <div class="button-row">
+                    <button class="button secondary" onclick="toggleSort()">⏯ Start/Stop</button>
+                </div>
+                <button class="button tertiary" style="margin-top: 8px;" onclick="resetSort()">↻ Reset</button>
+            </div>
+        </div>
+
+        <!-- Main Canvas Area -->
+        <div class="canvas-area">
+            <div id="canvas-container">
+                <div class="loading">Initializing bubble sort visualization...</div>
+            </div>
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        let params = {
+            seed: 12345,
+            arraySize: 50,
+            speed: 10,
+            highlightIntensity: 0.7
+        };
+
+        let defaultParams = {...params};
+
+        // Bubble sort state
+        let arr = [];
+        let isSorting = false;
+        let isPaused = false;
+        let i = 0, j = 0;
+        let swapped = false;
+        let comparingIndices = [];
+        let swappedThisPass = false;
+        let sortedElements = new Set();
+        let frameCounter = 0;
+        let targetFrames = 1;
+
+        function setup() {
+            let canvas = createCanvas(1000, 500);
+            canvas.parent('canvas-container');
+
+            initializeSort();
+            document.querySelector('.loading').style.display = 'none';
+        }
+
+        function initializeSort() {
+            randomSeed(params.seed);
+
+            arr = [];
+            for (let k = 0; k < params.arraySize; k++) {
+                arr.push(random(10, 100));
+            }
+
+            i = 0;
+            j = 0;
+            swapped = false;
+            comparingIndices = [];
+            sortedElements = new Set();
+            isSorting = false;
+            isPaused = false;
+            frameCounter = 0;
+            targetFrames = max(1, 21 - params.speed);
+
+            background(250, 249, 245);
+            draw();
+            updateStatus();
+        }
+
+        function draw() {
+            background(250, 249, 245);
+
+            if (isSorting && !isPaused) {
+                frameCounter++;
+                if (frameCounter >= targetFrames) {
+                    frameCounter = 0;
+                    bubbleSortStep();
+                }
+            }
+
+            drawBars();
+        }
+
+        function bubbleSortStep() {
+            if (i >= arr.length - 1) {
+                isSorting = false;
+                i = 0;
+                j = 0;
+                updateStatus();
+                return;
+            }
+
+            if (j < arr.length - i - 1) {
+                comparingIndices = [j, j + 1];
+
+                if (arr[j] > arr[j + 1]) {
+                    // Swap
+                    let temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                    swapped = true;
+                    swappedThisPass = true;
+                }
+
+                j++;
+            } else {
+                // End of pass
+                if (!swappedThisPass) {
+                    // Array is sorted
+                    isSorting = false;
+                    for (let k = 0; k < arr.length; k++) {
+                        sortedElements.add(k);
+                    }
+                } else {
+                    sortedElements.add(arr.length - 1 - i);
+                }
+
+                i++;
+                j = 0;
+                swappedThisPass = false;
+            }
+
+            updateStatus();
+        }
+
+        function drawBars() {
+            let barWidth = width / arr.length;
+            let maxVal = max(...arr);
+
+            for (let k = 0; k < arr.length; k++) {
+                let barHeight = (arr[k] / maxVal) * (height - 40);
+                let x = k * barWidth;
+                let y = height - barHeight;
+
+                // Color based on state
+                let barColor;
+                if (sortedElements.has(k)) {
+                    barColor = color(216, 133, 65); // Orange - sorted
+                } else if (comparingIndices.includes(k)) {
+                    barColor = color(106, 155, 204); // Blue - being compared
+                    barColor.setAlpha(params.highlightIntensity * 255);
+                } else {
+                    barColor = color(176, 174, 165); // Gray - unsorted
+                }
+
+                fill(barColor);
+                stroke(250, 249, 245);
+                strokeWeight(1);
+                rect(x, y, barWidth - 2, barHeight);
+            }
+
+            comparingIndices = [];
+        }
+
+        function toggleSort() {
+            if (!isSorting) {
+                isSorting = true;
+                if (i === 0 && j === 0) {
+                    // Start fresh
+                } else if (i >= arr.length - 1) {
+                    // Restart
+                    initializeSort();
+                    isSorting = true;
+                }
+            } else {
+                isSorting = false;
+            }
+            updateStatus();
+        }
+
+        function resetSort() {
+            initializeSort();
+        }
+
+        function updateStatus() {
+            let status = '';
+            if (!isSorting) {
+                if (i === 0 && j === 0) {
+                    status = 'Ready to sort. Click Start/Stop to begin.';
+                } else if (i >= arr.length - 1) {
+                    status = 'Sorting complete! ' + arr.length + ' elements sorted.';
+                }
+            } else {
+                status = `Sorting... Pass ${i + 1}/${arr.length}, Sorted: ${sortedElements.size}`;
+            }
+            document.getElementById('status').textContent = status;
+        }
+
+        function updateParam(paramName, value) {
+            params[paramName] = parseFloat(value);
+            document.getElementById(paramName + '-value').textContent = value;
+
+            if (paramName === 'arraySize') {
+                initializeSort();
+            } else if (paramName === 'speed') {
+                targetFrames = max(1, 21 - params.speed);
+            }
+        }
+
+        function updateSeedDisplay() {
+            document.getElementById('seed-input').value = params.seed;
+        }
+
+        function updateSeed() {
+            let input = document.getElementById('seed-input');
+            let newSeed = parseInt(input.value);
+            if (newSeed && newSeed > 0) {
+                params.seed = newSeed;
+                initializeSort();
+            } else {
+                updateSeedDisplay();
+            }
+        }
+
+        function previousSeed() {
+            params.seed = max(1, params.seed - 1);
+            updateSeedDisplay();
+            initializeSort();
+        }
+
+        function nextSeed() {
+            params.seed = params.seed + 1;
+            updateSeedDisplay();
+            initializeSort();
+        }
+
+        function randomSeedAndUpdate() {
+            params.seed = floor(random(999999)) + 1;
+            updateSeedDisplay();
+            initializeSort();
+        }
+
+        window.addEventListener('load', function() {
+            updateSeedDisplay();
+        });
+    </script>
+</body>
+</html>
